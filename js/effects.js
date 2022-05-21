@@ -13,7 +13,7 @@ let key = setInterval(() => {
     }
 }, 150)
 
-let speed = 35
+let speed = 7.5
 window.onload = function() {
     var anchors = document.getElementsByTagName('button');
     for(var i = 0; i < anchors.length; i++) {
@@ -25,22 +25,30 @@ window.onload = function() {
         anchor.onclick = function() {
             if (href.startsWith("\#")) {
                 let time = 0
-                let key2 = setInterval(() => {
-                    if (time < (document.getElementById(href.replace("\#", "").trim()).getBoundingClientRect().top - anchor.getBoundingClientRect().top + window.innerHeight/2 - speed)/speed) {
+                console.log(getComputedStyle(document.body).scrollBehavior)
+                if (getComputedStyle(document.body).scrollBehavior == 'smooth'){
                     window.scrollBy({
-                        top: speed, 
+                        top: (document.getElementById(href.replace("\#", "").trim()).getBoundingClientRect().top - anchor.getBoundingClientRect().top + window.innerHeight/2), 
                         left: 0, 
                         behavior: 'smooth' 
-                      });
-                      time ++
+                    });
                     } else {
-                        if (!window.location.includes(href)) {
-                            window.location = window.location + href
+                    let key2 = setInterval(() => {
+                        if (time < (document.getElementById(href.replace("\#", "").trim()).getBoundingClientRect().top - anchor.getBoundingClientRect().top + window.innerHeight/2 - speed)/speed) {
+                            window.scrollBy({
+                                top: speed, 
+                                left: 0, 
+                                behavior: 'smooth' 
+                            });
+                            time ++
+                        } else {
+                            if (!window.location.includes(href)) {
+                                window.location = window.location + href
+                            }
+                            clearInterval(key2)
                         }
-                        clearInterval(key2)
+                    }, 1)
                     }
-                }, 1)
-                
             }
         }
     }
